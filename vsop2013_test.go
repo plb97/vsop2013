@@ -317,7 +317,7 @@ var newDataTests = []data_test_t {
 
 func TestVsop2013_ref(t *testing.T) {
 	for _, tt := range newDataTests {
-		println(fmt.Sprintf("tt=%v",tt))
+		//println(fmt.Sprintf("tt=%v",tt))
 		res, _ := EphVsop2013_ref([]float64{tt.jd}, []Planet{tt.planet})
 		if 1 != len(res) {
 			t.Errorf("EphVsop2013_ref({%v},{%v}): expected nb jds %d, actual %d", tt.planet,tt.jd, 1, len(res))
@@ -336,6 +336,7 @@ func TestVsop2013_ref(t *testing.T) {
 
 func TestVsop2013(t *testing.T) {
 	for _, tt := range newDataTests {
+		//println(fmt.Sprintf("tt=%v",tt))
 		res, _ := EphVsop2013([]Planet{tt.planet}, []float64{tt.jd})
 		if 1 != len(res) {
 				t.Errorf("EphVsop2013({%v},{%v}): expected nb planets %d, actual %d", tt.planet,tt.jd, 1, len(res))
