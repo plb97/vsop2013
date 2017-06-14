@@ -1,6 +1,6 @@
 {
-	"inputDir":"/Users/philippe/Projects/workspace-java/GoMeeusTest/input",
-	"outputDir":"/Users/philippe/Projects/workspace-java/GoMeeusTest/output",
+	"inputDir":"/Users/philippe/Projects/Idea/Go/src/github.com/plb97/vsop2013/input",
+	"outputDir":"/Users/philippe/Projects/Idea/Go/src/github.com/plb97/vsop2013/output",
 	"tchebNmax":14,
 	"sqlConfig":{
 		"hostname":"127.0.0.1",
