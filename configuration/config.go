@@ -9,26 +9,31 @@ import (
 	"encoding/json"
 	"flag"
 	"io/ioutil"
-	"os"
+	"fmt"
 )
 
 type Config struct {
 	InputDir  string    `json:"inputDir"`
 	OutputDir string    `json:"outputDir"`
 	TchebNmax int       `json:"tchebNmax"`
-	SQL       SqlConfig `json:"sqlConfig"`
+	//SQL       SqlConfig `json:"sqlConfig"`
 }
-
+func (c Config) String() string {
+	return fmt.Sprintf("[inputDir=%v outputDir=%v TchebNmax=%v]",c.InputDir,c.OutputDir,c.TchebNmax)
+}
 //func (r Vsop2013Config) String() string {
 //	return fmt.Sprintf("[%s %s %v]",InputDir, OutputDir, SQL)
 //}
-type SqlConfig struct {
-	Host string `json:"hostname"`
-	Port int    `json:"port"`
-	User string `json:"username"`
-	Pwd  string `json:"password"`
-	Db   string `json:"database"`
-}
+//type SqlConfig struct {
+//	Host string `json:"hostname"`
+//	Port int    `json:"port"`
+//	User string `json:"username"`
+//	Pwd  string `json:"password"`
+//	Db   string `json:"database"`
+//}
+//func (sc SqlConfig) String() string {
+//	return fmt.Sprintf("[host=% port=%v user=%v pwd=%v db=%v]",sc.Host,sc.Port,sc.User,sc.Pwd,sc.Db)
+//}
 
 //func (r SqlConfig) String() string {
 //	return fmt.Sprintf("[%s %d %s %s %s]",Host,Port,User,Pwd,Db)
@@ -37,8 +42,6 @@ type SqlConfig struct {
 func LoadConfig() Config {
 	configPtr := flag.String("config", "./config.json", "config.json file path")
 	flag.Parse()
-	x, _ := os.Getwd()
-	println("*configPtr",*configPtr,x)
 	config := LoadConfigFile(*configPtr)
 	return config
 }
@@ -53,8 +56,7 @@ func LoadConfigFile(path string) Config {
 	if err != nil {
 		panic(err)
 	}
-
 	return config
 }
 
-var Configuration = LoadConfig()
+var Configuration Config = LoadConfig()

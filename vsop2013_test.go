@@ -7,58 +7,60 @@ package vsop2013
 
 import (
 	"testing"
-
 	"fmt"
-	"sort"
 )
 
-func print_eph(r map[Planet]map[float64]*[6]float64) {
-fmt.Println("print_eph")
-
-	var jdkeys []float64
-	var pkeys []int
-
-//	for p, u := range r {
+//func print_eph(r map[Planet]map[float64]*[6]float64) {
+//fmt.Println("print_eph")
+//
+//	var jdkeys []float64
+//	var pkeys []int
+//
+////	for p, u := range r {
+////		fmt.Printf("%v\n",p)
+////		for jd, v := range u {
+////			fmt.Printf("	JD%.1f r=%v\n",jd,*v)
+////		}
+////	}
+////	fmt.Println("--------")
+//
+//	for p := range r {
+//		pkeys = append(pkeys, int(p))
+//	}
+//	sort.Ints(pkeys)
+//	for i := 0; i < len(pkeys); i++ {
+//		p := Planet(pkeys[i])
+//		u := r[p]
 //		fmt.Printf("%v\n",p)
-//		for jd, v := range u {
+//		jdkeys = jdkeys[0:0]
+//		for jd := range u {
+//			jdkeys = append(jdkeys,jd)
+//		}
+//		sort.Float64s(jdkeys)
+//		for k := 0; k < len(jdkeys); k++ {
+//			jd := jdkeys[k]
+//			v := u[jd]
 //			fmt.Printf("	JD%.1f r=%v\n",jd,*v)
 //		}
 //	}
-//	fmt.Println("--------")
-
-	for p := range r {
-		pkeys = append(pkeys, int(p))
-	}
-	sort.Ints(pkeys)
-	for i := 0; i < len(pkeys); i++ {
-		p := Planet(pkeys[i])
-		u := r[p]
-		fmt.Printf("%v\n",p)
-		jdkeys = jdkeys[0:0]
-		for jd := range u {
-			jdkeys = append(jdkeys,jd)
-		}
-		sort.Float64s(jdkeys)
-		for k := 0; k < len(jdkeys); k++ {
-			jd := jdkeys[k]
-			v := u[jd]
-			fmt.Printf("	JD%.1f r=%v\n",jd,*v)
-		}
-	}
-
-}
-
+//
+//}
+//
 func equal_f(a, b float64) (ok bool) {
 	const prec = 1e-12 // precision maximum
 	ok = -prec < b - a && b - a < prec
 	return ok
 }
+type data_test_t struct {
+	planet Planet
+	jd float64
+	expected [6]float64
+}
+func (d data_test_t) String() string {
+	return fmt.Sprintf("[planet=%v jd=%v expected=%v]",d.planet,d.jd,d.expected)
 
-var newDataTests = []struct {
-		planet Planet
-		jd float64
-		expected [6]float64
-	}{
+}
+var newDataTests = []data_test_t {
 //*** -4500 -3000
 //		 {MERCURY,77294.5,[6]float64{0.206929144965,0.231928624557,-0.005543469104,-0.026134828434,0.020919150858,0.004322047555 }},
 		 {MERCURY,77432.5,[6]float64{-0.117471195507,-0.449351650655,-0.019769152181,0.021886453471,-0.004728675894,-0.002696884109 }},
@@ -183,7 +185,7 @@ var newDataTests = []struct {
 		 {NEPTUNE,1446778.5,[6]float64{17.696372110423,23.952796620825,-0.898089501857,-0.002552072504,0.001887783262,0.000019632289 }},
 		 {NEPTUNE,1583576.5,[6]float64{-26.780509434288,13.785560914104,0.330428719746,-0.001450824080,-0.002773963007,0.000090352644 }},
 		 {NEPTUNE,1720374.5,[6]float64{-10.430661446086,-28.445104773194,0.825011526946,0.002918139318,-0.001067195300,-0.000045050554 }},
-//*** 0000 1500 
+//*** 0000 1500
 		 {MERCURY,1721057.5,[6]float64{0.066603200905,-0.449188934299,-0.041929775486,0.022266331675,0.005889128670,-0.001691602034 }},
 		 {MERCURY,1857855.5,[6]float64{0.191114807026,-0.391402785828,-0.049450765089,0.019714303707,0.014013219264,-0.000776943780 }},
 		 {MERCURY,1994653.5,[6]float64{0.292223654557,-0.287647522163,-0.050772254584,0.014207579054,0.021585792955,0.000377831259 }},
@@ -315,6 +317,7 @@ var newDataTests = []struct {
 
 func TestVsop2013_ref(t *testing.T) {
 	for _, tt := range newDataTests {
+		println(fmt.Sprintf("tt=%v",tt))
 		res, _ := EphVsop2013_ref([]float64{tt.jd}, []Planet{tt.planet})
 		if 1 != len(res) {
 			t.Errorf("EphVsop2013_ref({%v},{%v}): expected nb jds %d, actual %d", tt.planet,tt.jd, 1, len(res))
@@ -349,46 +352,46 @@ func TestVsop2013(t *testing.T) {
 	}
 }
 
-func TestVsop2013b(t *testing.T) {
-	for _, tt := range newDataTests {
-		actual, err := EphVsop2013b(tt.planet, tt.jd)
-		if nil != err {
-			t.Error(err)
-		}
-		for i := 0; i < len(actual); i++ {
-			if !equal_f(tt.expected[i] ,actual[i]) {
-				t.Errorf("EphVsop2013b(%v,%v): [%d] expected %.12f, actual %.12f", tt.planet, tt.jd, i, tt.expected[i] ,actual[i])
-			}
-		}
-	}
-}
+//func TestVsop2013b(t *testing.T) {
+//	for _, tt := range newDataTests {
+//		actual, err := EphVsop2013b(tt.planet, tt.jd)
+//		if nil != err {
+//			t.Error(err)
+//		}
+//		for i := 0; i < len(actual); i++ {
+//			if !equal_f(tt.expected[i] ,actual[i]) {
+//				t.Errorf("EphVsop2013b(%v,%v): [%d] expected %.12f, actual %.12f", tt.planet, tt.jd, i, tt.expected[i] ,actual[i])
+//			}
+//		}
+//	}
+//}
 
-func TestVsop2013_db(t *testing.T) {
-	for _, tt := range newDataTests {
-		r, err := EphVsop2013_db(tt.planet, tt.jd)
-		if nil != err {
-			t.Error(err)
-		}
-		actual := r.E()
-		for i := 0; i < len(actual); i++ {
-			if !equal_f(tt.expected[i] ,actual[i]) {
-				t.Errorf("EphVsop2013_db(%v,%v): [%d] expected %.12f, actual %.12f", tt.planet, tt.jd, i, tt.expected[i] ,actual[i])
-			}
-		}
-	}
-}
+//func TestVsop2013_db(t *testing.T) {
+//	for _, tt := range newDataTests {
+//		r, err := EphVsop2013_db(tt.planet, tt.jd)
+//		if nil != err {
+//			t.Error(err)
+//		}
+//		actual := r.E()
+//		for i := 0; i < len(actual); i++ {
+//			if !equal_f(tt.expected[i] ,actual[i]) {
+//				t.Errorf("EphVsop2013_db(%v,%v): [%d] expected %.12f, actual %.12f", tt.planet, tt.jd, i, tt.expected[i] ,actual[i])
+//			}
+//		}
+//	}
+//}
 
-func TestVsop2013_sql(t *testing.T) {
-	for _, tt := range newDataTests {
-		r, err := EphVsop2013_sql(tt.planet, tt.jd)
-		if nil != err {
-			t.Error(err)
-		}
-		actual := r.E()
-		for i := 0; i < len(actual); i++ {
-			if !equal_f(tt.expected[i] ,actual[i]) {
-				t.Errorf("EphVsop2013_sql(%v,%v): [%d] expected %.12f, actual %.12f", tt.planet, tt.jd, i, tt.expected[i] ,actual[i])
-			}
-		}
-	}
-}
+//func TestVsop2013_sql(t *testing.T) {
+//	for _, tt := range newDataTests {
+//		r, err := EphVsop2013_sql(tt.planet, tt.jd)
+//		if nil != err {
+//			t.Error(err)
+//		}
+//		actual := r.E()
+//		for i := 0; i < len(actual); i++ {
+//			if !equal_f(tt.expected[i] ,actual[i]) {
+//				t.Errorf("EphVsop2013_sql(%v,%v): [%d] expected %.12f, actual %.12f", tt.planet, tt.jd, i, tt.expected[i] ,actual[i])
+//			}
+//		}
+//	}
+//}

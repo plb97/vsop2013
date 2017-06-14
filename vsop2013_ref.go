@@ -172,7 +172,6 @@ func ephVsop2013_ref (djb float64, planet Planet, reader *os.File) (*[6]float64,
 	var r = new([6]float64)
 //fmt.Println("ephVsop2013_ref")	
 //fmt.Printf("djb=%f\n",djb)
-
 	param_size := Sizeof_vsop2013_param_t()
 	bparam := make([]byte,param_size)
 	coef_size := Sizeof_vsop2013_coef_t()
@@ -189,7 +188,6 @@ func ephVsop2013_ref (djb float64, planet Planet, reader *os.File) (*[6]float64,
 	param := New_vsop2013_param_t(bparam)
 	t1 := param.t1-jd2000
 	t2 := param.t2-jd2000
-//fmt.Printf("param=%v t1=%f t2=%f\n",param,t1,t2)
 
 	// Error in the parameters
 	if djb < t1 || djb > t2 {
@@ -284,13 +282,12 @@ func EphVsop2013_ref(jds []float64, planets []Planet) (map[float64]map[Planet]*[
 				*errs = make([]error,0,len(jds)*len(planets))
 			}
 			*errs = append(*errs,errr)
-			continue	
 		}
 		defer reader.Close()
 
 		if _, ok := result[jd]; !ok {
 			result[jd] = make(map[Planet]*[6]float64,len(planets))
-		} 
+		}
 
 		djb := jd - jd2000
 		for _, planet := range planets {
