@@ -860,9 +860,11 @@ func main() {
 //	fmt.Println("dt",julian.NewDatetimeJD(1721057.5))
 //	fmt.Println("dt",julian.NewDatetimeJD(2268932.5))
 //	fmt.Println("dt",julian.NewDatetimeJD(2816818.5))
-//	vsop2013.Generate_ref()
-//	vsop2013.Compute_ref()
-//	vsop2013_test()
+	vsop2013.Vsop2013_binfile()
+	vsop2013.Generate_ref()
+	vsop2013.Compute_ref()
+	vsop2013_test()
+
 //	vsop2013.Generate_db()
 //	vsop2013.Generate_sql()
 
@@ -1247,10 +1249,10 @@ func vsop2013_test() {
 	}
 }
 
-func vsop2013_binfile() {
-	vsop2013.Vsop2013_binfile()
-	fmt.Println("==================")
-}
+//func vsop2013_binfile() {
+//	vsop2013.Vsop2013_binfile()
+//	fmt.Println("==================")
+//}
 
 //func moon() {
 //	var a, m, j int

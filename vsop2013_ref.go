@@ -18,37 +18,39 @@ import (
 
 func Vsop2013_binfile() {
 	for ifile, _ := range names1 {
-		namef1 := fmt.Sprintf("%s/vsop2013/%s",configuration.Configuration.InputDir,names1[ifile])
-		fmt.Println(namef1)
-		reader, errr := vsop2013_open(namef1)
-		if nil != errr {
-			panic(errr.Error())
-		}
-		defer reader.Close()
-		nul1 := bufio.NewScanner(reader)
-		
 		namef2 := fmt.Sprintf("%s/%s.bin",configuration.Configuration.OutputDir,names1[ifile])
-		writer, errw := vsop2013_create(namef2)
-		if nil != errw {
-			panic(errw.Error())
-		}
-		defer writer.Close()
-		
-		data := new(vsop2013_data_t)
-		data.param.idf,data.param.t1,data.param.t2,data.param.delta,data.param.nintv,data.param.ncoef = vsop2013_read1001(nul1)
-		data.param.loc = vsop2013_read1002(nul1)
-		writer.Write(data.param.Bytes())
-		data.coefs = make([]vsop2013_coef_t,data.param.nintv)
-		for k := int32(0); k < data.param.nintv; k++ {
-			data.coefs[k].t1, data.coefs[k].t2 = vsop2013_read1003(nul1)
-			for n := 0; n < 163; n++ { // 163=978/6
-				xcoef, icoef := vsop2013_read1004(nul1)
-				for l := 0; l < 6; l++ {
-					m:=n*6+l
-					data.coefs[k].coef[m]=xcoef[l]*math.Pow10(icoef[l])
-				}
+		if _, err := os.Stat(namef2); os.IsNotExist(err) {
+			namef1 := fmt.Sprintf("%s/%s",configuration.Configuration.InputDir,names1[ifile])
+			reader, errr := vsop2013_open(namef1)
+			if nil != errr {
+				panic(errr.Error())
 			}
-			writer.Write(data.coefs[k].Bytes())
+			defer reader.Close()
+			nul1 := bufio.NewScanner(reader)
+
+			writer, errw := vsop2013_create(namef2)
+			if nil != errw {
+				panic(errw.Error())
+			}
+			defer writer.Close()
+			fmt.Println(namef2)
+
+			data := new(vsop2013_data_t)
+			data.param.idf,data.param.t1,data.param.t2,data.param.delta,data.param.nintv,data.param.ncoef = vsop2013_read1001(nul1)
+			data.param.loc = vsop2013_read1002(nul1)
+			writer.Write(data.param.Bytes())
+			data.coefs = make([]vsop2013_coef_t,data.param.nintv)
+			for k := int32(0); k < data.param.nintv; k++ {
+				data.coefs[k].t1, data.coefs[k].t2 = vsop2013_read1003(nul1)
+				for n := 0; n < 163; n++ { // 163=978/6
+					xcoef, icoef := vsop2013_read1004(nul1)
+					for l := 0; l < 6; l++ {
+						m:=n*6+l
+						data.coefs[k].coef[m]=xcoef[l]*math.Pow10(icoef[l])
+					}
+				}
+				writer.Write(data.coefs[k].Bytes())
+			}
 		}
 	}
 	return
@@ -56,40 +58,44 @@ func Vsop2013_binfile() {
 
 func Generate_ref() {
 	for ifile, _ := range names1 {
-		namef1 := fmt.Sprintf("%s/%s",configuration.Configuration.InputDir,names1[ifile])
-		fmt.Println(namef1)
-		reader, errr := vsop2013_open(namef1)
-		if nil != errr {
-			panic(errr.Error())
-		}
-		defer reader.Close()
-		nul1 := bufio.NewScanner(reader)
-		
 		namef2 := fmt.Sprintf("%s/%s.txt",configuration.Configuration.OutputDir,names1[ifile])
-		writer, errw := vsop2013_create(namef2)
-		if nil != errw {
-			panic(errw.Error())
-		}
-		defer writer.Close()
-		
-		var param vsop2013_param_t
-		param.idf,param.t1,param.t2,param.delta,param.nintv,param.ncoef = vsop2013_read1001(nul1)
-		param.loc = vsop2013_read1002(nul1)
-		fmt.Fprintf(writer,"param=%v\n",param)
-		var coef vsop2013_coef_t
-		for k := int32(0); k < param.nintv; k++ {
-			coef.t1, coef.t2 = vsop2013_read1003(nul1)
-			for n := 0; n < 163; n++ {
-				xcoef, icoef := vsop2013_read1004(nul1)
-				for l := 0; l < 6; l++ {
-					m:=n*6+l
-					coef.coef[m]=xcoef[l]*math.Pow10(icoef[l])
+		if _, err := os.Stat(namef2); os.IsNotExist(err) {
+			namef1 := fmt.Sprintf("%s/%s", configuration.Configuration.InputDir, names1[ifile])
+			fmt.Println(namef1)
+			reader, errr := vsop2013_open(namef1)
+			if nil != errr {
+				panic(errr.Error())
+			}
+			defer reader.Close()
+			nul1 := bufio.NewScanner(reader)
+
+			writer, errw := vsop2013_create(namef2)
+			if nil != errw {
+				panic(errw.Error())
+			}
+			defer writer.Close()
+			fmt.Println(namef2)
+
+			var param vsop2013_param_t
+			param.idf, param.t1, param.t2, param.delta, param.nintv, param.ncoef = vsop2013_read1001(nul1)
+			param.loc = vsop2013_read1002(nul1)
+			fmt.Fprintf(writer, "param=%v\n", param)
+			var coef vsop2013_coef_t
+			for k := int32(0); k < param.nintv; k++ {
+				coef.t1, coef.t2 = vsop2013_read1003(nul1)
+				for n := 0; n < 163; n++ {
+					xcoef, icoef := vsop2013_read1004(nul1)
+					for l := 0; l < 6; l++ {
+						m := n * 6 + l
+						coef.coef[m] = xcoef[l] * math.Pow10(icoef[l])
+					}
+				}
+				fmt.Fprintf(writer, "coef%d=%v\n", k, coef)
+				if 2 == k {
+					break
 				}
 			}
-			fmt.Fprintf(writer,"coef%d=%v\n",k,coef)
-			if 2 == k {break}
 		}
-		break
 	}
 	return
 }
@@ -104,60 +110,66 @@ func Compute_ref() {
           2816818.5e0,   //  3000/02/01 0h
 	}
 var periods = []string{	"*** -4500 -3000",
-							"*** -3000 -1500",
-							"*** -1500 0000",
-							"*** 0000 1500",
-							"*** 1500 3000",
-							"*** 3000 4500",
-	} 
-	out, erro := vsop2013_create(fmt.Sprintf("%s/VSOP2013_compute.txt",configuration.Configuration.OutputDir))
-	if nil != erro {
-		panic(erro.Error())
+			"*** -3000 -1500",
+			"*** -1500 0000",
+			"*** 0000 1500",
+			"*** 1500 3000",
+			"*** 3000 4500",
 	}
-	defer out.Close()
-
-	ndat:=5
-	step:=136798.e0
-
-	for ifile := 0; ifile < len(names1); ifile++ {
-		namef1 := fmt.Sprintf("%s.bin",names1[ifile])
-		reader, errr := vsop2013_open(fmt.Sprintf("%s/%s",configuration.Configuration.OutputDir,namef1))
-		if nil != errr {
-			panic(errr.Error())
+	namef2 := fmt.Sprintf("%s/VSOP2013_compute.txt",configuration.Configuration.OutputDir)
+	if _, err := os.Stat(namef2); os.IsNotExist(err) {
+		out, erro := vsop2013_create(namef2)
+		if nil != erro {
+			panic(erro)
 		}
-		defer reader.Close()
-			
-		writer, errw := vsop2013_create(fmt.Sprintf("%s/%s.compute.txt",configuration.Configuration.OutputDir,names1[ifile]))
-		if nil != errw {
-			panic(errw.Error())
-		}
-		defer writer.Close()
-		
-		tzero := tzeros[ifile]
+		defer out.Close()
+		fmt.Println(namef2)
 
-//fmt.Println("ifile",ifile,"namef1",namef1,"namef2",namef2)
-		fmt.Fprintf(out,"\r\n")
-		fmt.Fprintf(out,"  %s\r\n",periods[ifile])
-		fmt.Fprintf(out,"\r\n")
-		maxpla := 9
-		if 4 != ifile && 8 < maxpla {
-			maxpla=8
-		}
-		for i := 0; i < maxpla; i++ {
-			planet := Planet(i+1)
-			for n := 0; n < ndat; n++ {
-				jd := tzero+float64(n)*step
-				t := jd-jd2000
-				r,err := ephVsop2013_ref (t,planet,reader)
-				if nil != err {
-					panic(err.Error())
+		ndat:=5
+		step:=136798.e0
+
+		for ifile := 0; ifile < len(names1); ifile++ {
+			namef1 := fmt.Sprintf("%s.bin", names1[ifile])
+			reader, errr := vsop2013_open(fmt.Sprintf("%s/%s", configuration.Configuration.OutputDir, namef1))
+			if nil != errr {
+				panic(errr.Error())
+			}
+			defer reader.Close()
+
+			namef2 := fmt.Sprintf("%s/%s.compute.txt", configuration.Configuration.OutputDir, names1[ifile])
+			writer, errw := vsop2013_create(namef2)
+			if nil != errw {
+				panic(errw.Error())
+			}
+			defer writer.Close()
+			fmt.Println(namef2)
+
+			tzero := tzeros[ifile]
+
+			//fmt.Println("ifile",ifile,"namef1",namef1,"namef2",namef2)
+			fmt.Fprintf(out, "\r\n")
+			fmt.Fprintf(out, "  %s\r\n", periods[ifile])
+			fmt.Fprintf(out, "\r\n")
+			maxpla := 9
+			if 4 != ifile && 8 < maxpla {
+				maxpla = 8
+			}
+			for i := 0; i < maxpla; i++ {
+				planet := Planet(i + 1)
+				for n := 0; n < ndat; n++ {
+					jd := tzero + float64(n) * step
+					t := jd - jd2000
+					r, err := ephVsop2013_ref(t, planet, reader)
+					if nil != err {
+						panic(err.Error())
+					}
+					fmt.Fprintf(out, "  %-10s  JD%9.1f  X :%16.12f ua    Y :%16.12f ua    Z :%16.12f ua  \r\n" +
+						"                           X':%16.12f ua/d  Y':%16.12f ua/d  Z':%16.12f ua/d\r\n",
+						planet, jd, r[0], r[1], r[2], r[3], r[4], r[5])
+					fmt.Fprintf(writer, "%-10s  JD%9.1f  X :%16.12f ua    Y :%16.12f ua    Z :%16.12f ua  \n" +
+						"                         X':%16.12f ua/d  Y':%16.12f ua/d  Z':%16.12f ua/d\n",
+						planet, jd, r[0], r[1], r[2], r[3], r[4], r[5])
 				}
-				fmt.Fprintf(out,"  %-10s  JD%9.1f  X :%16.12f ua    Y :%16.12f ua    Z :%16.12f ua  \r\n"+
-					        "                           X':%16.12f ua/d  Y':%16.12f ua/d  Z':%16.12f ua/d\r\n",
-					        planet,jd,r[0],r[1],r[2],r[3],r[4],r[5])
-				fmt.Fprintf(writer,"%-10s  JD%9.1f  X :%16.12f ua    Y :%16.12f ua    Z :%16.12f ua  \n"+
-					        "                         X':%16.12f ua/d  Y':%16.12f ua/d  Z':%16.12f ua/d\n",
-					        planet,jd,r[0],r[1],r[2],r[3],r[4],r[5])
 			}
 		}
 	}

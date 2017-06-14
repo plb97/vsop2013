@@ -10,6 +10,11 @@ import (
 	"fmt"
 )
 
+func init() {
+	Vsop2013_binfile()
+	Generate_ref()
+	Compute_ref()
+}
 //func print_eph(r map[Planet]map[float64]*[6]float64) {
 //fmt.Println("print_eph")
 //
