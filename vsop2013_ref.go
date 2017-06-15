@@ -25,6 +25,7 @@ func Vsop2013_binfile() {
 				panic(errr.Error())
 			}
 			defer reader.Close()
+			fmt.Println(namef1)
 			nul1 := bufio.NewScanner(reader)
 
 			writer, errw := vsop2013_create(namef2)
@@ -60,12 +61,12 @@ func Generate_ref() {
 		namef2 := fmt.Sprintf("%s/%s.txt",Configuration.OutputDir,names1[ifile])
 		if _, err := os.Stat(namef2); os.IsNotExist(err) {
 			namef1 := fmt.Sprintf("%s/%s", Configuration.InputDir, names1[ifile])
-			fmt.Println(namef1)
 			reader, errr := vsop2013_open(namef1)
 			if nil != errr {
 				panic(errr.Error())
 			}
 			defer reader.Close()
+			fmt.Println(namef1)
 			nul1 := bufio.NewScanner(reader)
 
 			writer, errw := vsop2013_create(namef2)

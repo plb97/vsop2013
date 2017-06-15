@@ -36,7 +36,7 @@ func LoadConfigFile(path string) Config {
 		const (
 			tcheb = 14
 			input  = "/input"
-			output = "/out"
+			output = "/output"
 		)
 		var wd string
 		wd, err = os.Getwd()
