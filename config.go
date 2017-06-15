@@ -55,4 +55,3 @@ func LoadConfigFile(path string) Config {
 }
 
 var Configuration Config = LoadConfig()
-
