@@ -23,7 +23,7 @@ func (c Config) String() string {
 }
 
 func LoadConfig() Config {
-	configPtr := flag.String("config", "./config.json.txt", "config.json.txt file path")
+	configPtr := flag.String("config", "./config.json", "config.json.txt file path")
 	flag.Parse()
 	config := LoadConfigFile(*configPtr)
 	return config
