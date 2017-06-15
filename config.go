@@ -19,7 +19,7 @@ type Config struct {
 	TchebNmax int       `json:"tchebNmax"`
 }
 func (c Config) String() string {
-	return fmt.Sprintf("[inputDir=%v outputDir=%v TchebNmax=%v]",c.InputDir,c.OutputDir,c.TchebNmax)
+	return fmt.Sprintf("config.json\n{\n\t\"inputDir\":\"%v\",\n\t\"outputDir\":\"%v\",\n\t\"tchebNmax\":%v\n}",c.InputDir,c.OutputDir,c.TchebNmax)
 }
 
 func LoadConfig() Config {
@@ -44,6 +44,7 @@ func LoadConfigFile(path string) Config {
 			panic(err)
 		}
 		config = Config{InputDir:wd+input, OutputDir:wd+output,TchebNmax:tcheb}
+		fmt.Println(config.String())
 	} else {
 		err = json.Unmarshal(file, &config)
 		if err != nil {
