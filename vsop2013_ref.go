@@ -4,9 +4,9 @@
 // (BSD-style) license that can be found in the
 // LICENCE (French) or LICENSE (English) file.
 package vsop2013
-
+//
 // ftp://ftp.imcce.fr/pub/
-
+//
 import (
 	"fmt"
 	"math"
