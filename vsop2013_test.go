@@ -358,46 +358,16 @@ func TestVsop2013(t *testing.T) {
 	}
 }
 
-//func TestVsop2013b(t *testing.T) {
-//	for _, tt := range newDataTests {
-//		actual, err := EphVsop2013b(tt.planet, tt.jd)
-//		if nil != err {
-//			t.Error(err)
-//		}
-//		for i := 0; i < len(actual); i++ {
-//			if !equal_f(tt.expected[i] ,actual[i]) {
-//				t.Errorf("EphVsop2013b(%v,%v): [%d] expected %.12f, actual %.12f", tt.planet, tt.jd, i, tt.expected[i] ,actual[i])
-//			}
-//		}
-//	}
-//}
-
-//func TestVsop2013_db(t *testing.T) {
-//	for _, tt := range newDataTests {
-//		r, err := EphVsop2013_db(tt.planet, tt.jd)
-//		if nil != err {
-//			t.Error(err)
-//		}
-//		actual := r.E()
-//		for i := 0; i < len(actual); i++ {
-//			if !equal_f(tt.expected[i] ,actual[i]) {
-//				t.Errorf("EphVsop2013_db(%v,%v): [%d] expected %.12f, actual %.12f", tt.planet, tt.jd, i, tt.expected[i] ,actual[i])
-//			}
-//		}
-//	}
-//}
-
-//func TestVsop2013_sql(t *testing.T) {
-//	for _, tt := range newDataTests {
-//		r, err := EphVsop2013_sql(tt.planet, tt.jd)
-//		if nil != err {
-//			t.Error(err)
-//		}
-//		actual := r.E()
-//		for i := 0; i < len(actual); i++ {
-//			if !equal_f(tt.expected[i] ,actual[i]) {
-//				t.Errorf("EphVsop2013_sql(%v,%v): [%d] expected %.12f, actual %.12f", tt.planet, tt.jd, i, tt.expected[i] ,actual[i])
-//			}
-//		}
-//	}
-//}
+func TestVsop2013b(t *testing.T) {
+	for _, tt := range newDataTests {
+		actual, err := EphVsop2013b(tt.planet, tt.jd)
+		if nil != err {
+			t.Error(err)
+		}
+		for i := 0; i < len(actual); i++ {
+			if !equal_f(tt.expected[i] ,actual[i]) {
+				t.Errorf("EphVsop2013b(%v,%v): [%d] expected %.12f, actual %.12f", tt.planet, tt.jd, i, tt.expected[i] ,actual[i])
+			}
+		}
+	}
+}

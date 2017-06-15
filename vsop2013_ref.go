@@ -8,7 +8,6 @@ package vsop2013
 // ftp://ftp.imcce.fr/pub/
 
 import (
-	"github.com/plb97/vsop2013/configuration"
 	"fmt"
 	"math"
 	"bufio"
@@ -18,9 +17,9 @@ import (
 
 func Vsop2013_binfile() {
 	for ifile, _ := range names1 {
-		namef2 := fmt.Sprintf("%s/%s.bin",configuration.Configuration.OutputDir,names1[ifile])
+		namef2 := fmt.Sprintf("%s/%s.bin",Configuration.OutputDir,names1[ifile])
 		if _, err := os.Stat(namef2); os.IsNotExist(err) {
-			namef1 := fmt.Sprintf("%s/%s",configuration.Configuration.InputDir,names1[ifile])
+			namef1 := fmt.Sprintf("%s/%s",Configuration.InputDir,names1[ifile])
 			reader, errr := vsop2013_open(namef1)
 			if nil != errr {
 				panic(errr.Error())
@@ -58,9 +57,9 @@ func Vsop2013_binfile() {
 
 func Generate_ref() {
 	for ifile, _ := range names1 {
-		namef2 := fmt.Sprintf("%s/%s.txt",configuration.Configuration.OutputDir,names1[ifile])
+		namef2 := fmt.Sprintf("%s/%s.txt",Configuration.OutputDir,names1[ifile])
 		if _, err := os.Stat(namef2); os.IsNotExist(err) {
-			namef1 := fmt.Sprintf("%s/%s", configuration.Configuration.InputDir, names1[ifile])
+			namef1 := fmt.Sprintf("%s/%s", Configuration.InputDir, names1[ifile])
 			fmt.Println(namef1)
 			reader, errr := vsop2013_open(namef1)
 			if nil != errr {
@@ -116,7 +115,7 @@ var periods = []string{	"*** -4500 -3000",
 			"*** 1500 3000",
 			"*** 3000 4500",
 	}
-	namef2 := fmt.Sprintf("%s/VSOP2013_compute.txt",configuration.Configuration.OutputDir)
+	namef2 := fmt.Sprintf("%s/VSOP2013_compute.txt",Configuration.OutputDir)
 	if _, err := os.Stat(namef2); os.IsNotExist(err) {
 		out, erro := vsop2013_create(namef2)
 		if nil != erro {
@@ -130,13 +129,13 @@ var periods = []string{	"*** -4500 -3000",
 
 		for ifile := 0; ifile < len(names1); ifile++ {
 			namef1 := fmt.Sprintf("%s.bin", names1[ifile])
-			reader, errr := vsop2013_open(fmt.Sprintf("%s/%s", configuration.Configuration.OutputDir, namef1))
+			reader, errr := vsop2013_open(fmt.Sprintf("%s/%s", Configuration.OutputDir, namef1))
 			if nil != errr {
 				panic(errr.Error())
 			}
 			defer reader.Close()
 
-			namef2 := fmt.Sprintf("%s/%s.compute.txt", configuration.Configuration.OutputDir, names1[ifile])
+			namef2 := fmt.Sprintf("%s/%s.compute.txt", Configuration.OutputDir, names1[ifile])
 			writer, errw := vsop2013_create(namef2)
 			if nil != errw {
 				panic(errw.Error())
@@ -146,7 +145,6 @@ var periods = []string{	"*** -4500 -3000",
 
 			tzero := tzeros[ifile]
 
-			//fmt.Println("ifile",ifile,"namef1",namef1,"namef2",namef2)
 			fmt.Fprintf(out, "\r\n")
 			fmt.Fprintf(out, "  %s\r\n", periods[ifile])
 			fmt.Fprintf(out, "\r\n")
@@ -179,11 +177,8 @@ func ephVsop2013_ref (djb float64, planet Planet, reader *os.File) (*[6]float64,
 	var (
 		err_date=errors.New("Error Date")
 		err_file=errors.New("Error File")
-	//	err_planet=errors.New("Error Planet")
 	)
 	var r = new([6]float64)
-//fmt.Println("ephVsop2013_ref")	
-//fmt.Printf("djb=%f\n",djb)
 	param_size := Sizeof_vsop2013_param_t()
 	bparam := make([]byte,param_size)
 	coef_size := Sizeof_vsop2013_coef_t()
@@ -210,7 +205,6 @@ func ephVsop2013_ref (djb float64, planet Planet, reader *os.File) (*[6]float64,
 	ncf := param.loc.ncf[planet-1]
 	nsi := param.loc.nsi[planet-1]
 	step:= param.delta/float64(nsi)
-//fmt.Printf("iad=%d ncf=%d nsi=%d delta2=%f\n",iad,ncf,nsi,delta2)
 
 	// Reading the Chebychev coefficients
 	irec:=int64((djb-t1)/param.delta)
@@ -232,10 +226,8 @@ func ephVsop2013_ref (djb float64, planet Planet, reader *os.File) (*[6]float64,
 		ik--
 	}
 	iloc:=iad+6*ncf*ik
-//fmt.Printf("dj1=%f dj2=%f irec=%d coef=%.17f\n",coef.t1,coef.t2,irec,coef.coef[iloc:iloc+6])
 	dj0:=dj1+float64(ik)*step
 	x:=2.e0*(djb-dj0)/step - 1.e0
-//fmt.Printf("ik=%d iloc=%d dj0=%f x=%f\n",ik,iloc,dj0,x)
 	var tn = make([]float64,ncf)
 
 	tn[0]=1.e0
@@ -243,18 +235,13 @@ func ephVsop2013_ref (djb float64, planet Planet, reader *os.File) (*[6]float64,
 	for i := int32(2); i < ncf; i++ {
 		tn[i]=2.e0*x*tn[i-1]-tn[i-2]
 	}
-//fmt.Printf("ephVsop2013_ref: tn=%v\n",tn)
-//fmt.Printf("ephVsop2013_ref: coef=%v\n",coef.coef[iloc:iloc+6*ncf])
-	
+
 	for i := int32(0); i < 6; i++ {
 		r[i]=0.e0
 		for j := int32(0); j < ncf; j++ {
 			jp:=ncf-j-1
 			jt:=iloc+ncf*i+jp-1
 			r[i]+=tn[jp]*coef.coef[jt]
-//if 0 == i {
-//fmt.Printf("ephVsop2013_ref: tn[%d]=%v coef[%d]=%v r[%d]=%v\n",jp,tn[jp],jt,coef.coef[jt],i,r[i])
-//}
 		}
 	}
 
@@ -287,7 +274,7 @@ func EphVsop2013_ref(jds []float64, planets []Planet) (map[float64]map[Planet]*[
 				*errs = append(*errs,errors.New(fmt.Sprintf("Error Date: %f",jd)))
 				continue	
 		}
-		reader, errr := vsop2013_open(fmt.Sprintf("%s/%s",configuration.Configuration.OutputDir,namef))
+		reader, errr := vsop2013_open(fmt.Sprintf("%s/%s",Configuration.OutputDir,namef))
 		if nil != errr {
 			if nil == errs {
 				errs = new([]error)

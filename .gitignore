@@ -22,7 +22,7 @@
 .idea/xtextAutoBuilderState.xml
 output/
 vsop2013.iml
-/config.json
+/config.json.txt
 Would skip repository vsop2013/
 /output/VSOP2013.p2000.bin
 /output/VSOP2013.p1000.compute.txt
