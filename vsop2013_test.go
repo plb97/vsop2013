@@ -10,6 +10,11 @@ import (
 	"fmt"
 )
 
+func init() {
+	Vsop2013_binfile()
+	Generate_ref()
+	Compute_ref()
+}
 //func print_eph(r map[Planet]map[float64]*[6]float64) {
 //fmt.Println("print_eph")
 //
@@ -317,7 +322,7 @@ var newDataTests = []data_test_t {
 
 func TestVsop2013_ref(t *testing.T) {
 	for _, tt := range newDataTests {
-		println(fmt.Sprintf("tt=%v",tt))
+		//println(fmt.Sprintf("tt=%v",tt))
 		res, _ := EphVsop2013_ref([]float64{tt.jd}, []Planet{tt.planet})
 		if 1 != len(res) {
 			t.Errorf("EphVsop2013_ref({%v},{%v}): expected nb jds %d, actual %d", tt.planet,tt.jd, 1, len(res))
@@ -336,6 +341,7 @@ func TestVsop2013_ref(t *testing.T) {
 
 func TestVsop2013(t *testing.T) {
 	for _, tt := range newDataTests {
+		//println(fmt.Sprintf("tt=%v",tt))
 		res, _ := EphVsop2013([]Planet{tt.planet}, []float64{tt.jd})
 		if 1 != len(res) {
 				t.Errorf("EphVsop2013({%v},{%v}): expected nb planets %d, actual %d", tt.planet,tt.jd, 1, len(res))
@@ -352,46 +358,16 @@ func TestVsop2013(t *testing.T) {
 	}
 }
 
-//func TestVsop2013b(t *testing.T) {
-//	for _, tt := range newDataTests {
-//		actual, err := EphVsop2013b(tt.planet, tt.jd)
-//		if nil != err {
-//			t.Error(err)
-//		}
-//		for i := 0; i < len(actual); i++ {
-//			if !equal_f(tt.expected[i] ,actual[i]) {
-//				t.Errorf("EphVsop2013b(%v,%v): [%d] expected %.12f, actual %.12f", tt.planet, tt.jd, i, tt.expected[i] ,actual[i])
-//			}
-//		}
-//	}
-//}
-
-//func TestVsop2013_db(t *testing.T) {
-//	for _, tt := range newDataTests {
-//		r, err := EphVsop2013_db(tt.planet, tt.jd)
-//		if nil != err {
-//			t.Error(err)
-//		}
-//		actual := r.E()
-//		for i := 0; i < len(actual); i++ {
-//			if !equal_f(tt.expected[i] ,actual[i]) {
-//				t.Errorf("EphVsop2013_db(%v,%v): [%d] expected %.12f, actual %.12f", tt.planet, tt.jd, i, tt.expected[i] ,actual[i])
-//			}
-//		}
-//	}
-//}
-
-//func TestVsop2013_sql(t *testing.T) {
-//	for _, tt := range newDataTests {
-//		r, err := EphVsop2013_sql(tt.planet, tt.jd)
-//		if nil != err {
-//			t.Error(err)
-//		}
-//		actual := r.E()
-//		for i := 0; i < len(actual); i++ {
-//			if !equal_f(tt.expected[i] ,actual[i]) {
-//				t.Errorf("EphVsop2013_sql(%v,%v): [%d] expected %.12f, actual %.12f", tt.planet, tt.jd, i, tt.expected[i] ,actual[i])
-//			}
-//		}
-//	}
-//}
+func TestVsop2013b(t *testing.T) {
+	for _, tt := range newDataTests {
+		actual, err := EphVsop2013b(tt.planet, tt.jd)
+		if nil != err {
+			t.Error(err)
+		}
+		for i := 0; i < len(actual); i++ {
+			if !equal_f(tt.expected[i] ,actual[i]) {
+				t.Errorf("EphVsop2013b(%v,%v): [%d] expected %.12f, actual %.12f", tt.planet, tt.jd, i, tt.expected[i] ,actual[i])
+			}
+		}
+	}
+}
