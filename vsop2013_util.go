@@ -15,33 +15,13 @@ import (
 
 )
 
-//const dir1 = "/Users/philippe/Projects/workspace-java/GoMeeusTest/input/vsop2013"
 var names1 = []string{	"VSOP2013.m4000",	// [-4500 -3500]	  77294.5   625198.5
-						"VSOP2013.m2000",	// [-3500 -1500]	 625198.5  1173102.5
-						"VSOP2013.m1000",	// [-1500  0]		1173102.5  1721006.5
-						"VSOP2013.p1000",	// [ 0  +1500]		1721006.5  2268910.5
-						"VSOP2013.p2000",	// [+1500 +3000]	2268910.5  2816814.5
-						"VSOP2013.p4000",	// [+3000 +4500]	2816814.5  3364718.5
+			"VSOP2013.m2000",	// [-3500 -1500]	 625198.5  1173102.5
+			"VSOP2013.m1000",	// [-1500  0]		1173102.5  1721006.5
+			"VSOP2013.p1000",	// [ 0  +1500]		1721006.5  2268910.5
+			"VSOP2013.p2000",	// [+1500 +3000]	2268910.5  2816814.5
+			"VSOP2013.p4000",	// [+3000 +4500]	2816814.5  3364718.5
 }
-//const dir2 = "/Users/philippe/Projects/workspace-java/GoMeeusTest/output"
-
-//var db_pool = sync.Pool{New:
-//	func() interface{} {
-//		db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
-//				configuration.Configuration.SQL.User,
-//				configuration.Configuration.SQL.Pwd,
-//				configuration.Configuration.SQL.Host,
-//				configuration.Configuration.SQL.Port,
-//				configuration.Configuration.SQL.Db))
-//		if err != nil {
-//			log.Fatal(err)
-//		}
-//		if err = db.Ping(); err != nil {
-//			log.Fatal(err)
-//		}
-//		return db
-//	},
-//}
 
 func vsop2013_open(file string) (*os.File, error) {
 	reader, err := os.Open(file)
